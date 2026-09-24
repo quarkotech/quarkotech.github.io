@@ -27,6 +27,38 @@
   var year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
 
+  // Theme mode switcher (system / light / dark)
+  var themeSwitch = document.querySelector(".theme-switch");
+  if (themeSwitch) {
+    var root = document.documentElement;
+    var themeMq = window.matchMedia("(prefers-color-scheme: light)");
+    var themeButtons = themeSwitch.querySelectorAll("button[data-theme-pref]");
+
+    function syncThemeButtons() {
+      var pref = root.dataset.themePref || "system";
+      themeButtons.forEach(function (btn) {
+        btn.setAttribute("aria-pressed", String(btn.dataset.themePref === pref));
+      });
+    }
+
+    themeSwitch.addEventListener("click", function (e) {
+      var btn = e.target.closest("button[data-theme-pref]");
+      if (!btn) return;
+      var pref = btn.dataset.themePref;
+      root.dataset.themePref = pref;
+      try {
+        localStorage.setItem("quarko-theme", pref);
+      } catch (err) {}
+      root.dataset.theme = pref === "system" ? (themeMq.matches ? "light" : "dark") : pref;
+      syncThemeButtons();
+      links.classList.remove("open");
+      toggle.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+    });
+
+    syncThemeButtons();
+  }
+
   // Scroll reveal (progressive enhancement: no JS = everything visible)
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (!reduceMotion && "IntersectionObserver" in window) {

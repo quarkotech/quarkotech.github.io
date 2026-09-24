@@ -26,6 +26,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
     rel="stylesheet">
 
+  <script>
+    // Apply saved theme before first paint to avoid a flash
+    (function () {
+      var root = document.documentElement;
+      var pref = "system";
+      try {
+        var stored = localStorage.getItem("quarko-theme");
+        if (stored === "light" || stored === "dark") pref = stored;
+      } catch (e) {}
+      root.dataset.themePref = pref;
+      var mq = window.matchMedia("(prefers-color-scheme: light)");
+      function apply() {
+        root.dataset.theme = pref === "system" ? (mq.matches ? "light" : "dark") : pref;
+      }
+      apply();
+      mq.addEventListener("change", function () {
+        if (root.dataset.themePref === "system") apply();
+      });
+    })();
+  </script>
+
   <link href="assets/css/style.css" rel="stylesheet">
 
   <script type="application/ld+json">
@@ -51,6 +72,33 @@
         <a href="#about">About</a>
         <a href="#portfolio">Portfolio</a>
         <a href="#contact">Contact</a>
+        <div class="theme-switch" role="group" aria-label="Theme mode">
+          <button type="button" data-theme-pref="system" aria-pressed="true" title="Sync with system" aria-label="Sync with system">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+              <path d="M8 21h8"></path>
+              <path d="M12 17v4"></path>
+            </svg>
+          </button>
+          <button type="button" data-theme-pref="light" aria-pressed="false" title="Light" aria-label="Light">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+          </button>
+          <button type="button" data-theme-pref="dark" aria-pressed="false" title="Dark" aria-label="Dark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path>
+            </svg>
+          </button>
+        </div>
         <a class="btn btn-primary btn-sm" href="mailto:support@quarko.tech">Get in touch</a>
       </nav>
       <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
